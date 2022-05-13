@@ -11,7 +11,6 @@
    [clojure.pprint :as Wichita.pprint]
    [clojure.repl :as Wichita.repl]
 
-   [Dr-Pershing.drawing]
    [Dr-Pershing.seed]
    [Dr-Pershing.tomatoes]
 
