@@ -23,12 +23,6 @@ tag(){
 
 jar(){
 
-  clojure \
-    -X:Zazu Zazu.core/process \
-    :word '"Dr-Pershing"' \
-    :filename '"out/identicon/icon.png"' \
-    :size 256
-
   rm -rf out/*.jar
   COMMIT_HASH=$(git rev-parse --short HEAD)
   COMMIT_COUNT=$(git rev-list --count HEAD)
