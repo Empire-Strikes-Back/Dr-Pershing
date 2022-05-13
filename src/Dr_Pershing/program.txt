@@ -33,6 +33,10 @@ i will
   connec to host's armwrestling db
   compute ratings
   write back a table of ratings
+i will be repl-only program
+  i need no gui - i take and output edn
+  terminal repl is my user interface
+  install java, download and run java -jar Dr-Pershing.jar
 i will not be entirely free - i am armwrestling specific and evil-will-influenced - but i will be entirely money free
   no money-ads-coins-donate-sponsor-jobs-fundings-rewards-bounties-grants deadly disease
   no issue scratching on top of our heads
