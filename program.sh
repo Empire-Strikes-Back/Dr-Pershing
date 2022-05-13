@@ -2,7 +2,7 @@
 
 repl(){
   clj \
-    -J-Dclojure.core.async.pool-size=1 \
+    -J-Dclojure.core.async.pool-size=8 \
     -X:Ripley Ripley.core/process \
     :main-ns Dr-Pershing.main
 }
