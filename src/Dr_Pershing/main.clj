@@ -12,7 +12,8 @@
    [clojure.repl :as Wichita.repl]
 
    [Dr-Pershing.seed]
-   [Dr-Pershing.tomatoes]
+   [Dr-Pershing.sunflower_seeds]
+   [Dr-Pershing.radish]
 
    [Ripley.core])
   (:gen-class))
