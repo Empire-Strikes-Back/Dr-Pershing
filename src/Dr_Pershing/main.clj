@@ -75,9 +75,10 @@
     (go
       (let []
         (doseq [filepath ["corn.js" "package.json"]]
-          (->
-           (Wichita.java.io/file (Wichita.java.io/resource filepath))
-           (Wichita.java.io/copy (Wichita.java.io/file (.getCanonicalPath ^File (Wichita.java.io/file data-dir-path filepath)))))))
+          (with-open [in (Wichita.java.io/input-stream (Wichita.java.io/resource filepath))]
+            (Wichita.java.io/copy
+             in
+             (Wichita.java.io/file (.getCanonicalPath ^File (Wichita.java.io/file data-dir-path filepath)))))))
 
       (do
         (->
