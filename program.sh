@@ -32,7 +32,7 @@ jar(){
     -X:Genie Genie.core/process \
     :main-ns Dr-Pershing.main \
     :filename "\"out/Dr-Pershing-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
-    :paths '["src" "out/ui" "out/corn"]'
+    :paths '["src" "out/ui" "out/corn" "out/data"]'
 }
 
 Madison_install(){
