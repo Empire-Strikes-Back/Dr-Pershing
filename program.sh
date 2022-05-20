@@ -32,35 +32,36 @@ jar(){
     -X:Genie Genie.core/process \
     :main-ns Dr-Pershing.main \
     :filename "\"out/Dr-Pershing-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
-    :paths '["src" "out/ui" "out/corn" "out/data"]'
+    :paths '["src" "out/ui" "data"]'
 }
 
-Madison_install(){
+Moana(){
+  clojure -A:Moana:ui -M -m shadow.cljs.devtools.cli "$@"
+}
+
+ui_install(){
   npm i --no-package-lock
   mkdir -p out/ui/
   cp src/Dr_Pershing/index.html out/ui/index.html
   cp src/Dr_Pershing/style.css out/ui/style.css
-  mkdir -p out/corn/
-  cp package.json out/corn/package.json
 }
 
-Moana(){
-  clj -A:Moana:ui:corn -M -m shadow.cljs.devtools.cli "$@"
-}
-
-Madison_repl(){
-  Madison_install
+ui_repl(){
+  ui_install
   Moana clj-repl
-  # (shadow/watch :main)
   # (shadow/watch :ui)
-  # (shadow/repl :main)
+  # (shadow/repl :ui)
   # :repl/quit
+}
+
+ui_release(){
+  ui_install
+  Moana release :ui
 }
 
 release(){
   rm -rf out
-  Madison_install
-  Moana release :ui :corn
+  ui_release
   jar
 }
 

@@ -19,7 +19,7 @@
         relative/relative {:mvn/version "0.1.2"}
         ageneau/glicko2 {:mvn/version "0.1.2"}
 
-        #_com.github.ipfs/java-ipfs-http-client #_{:mvn/version "v1.3.3"}}
+        com.github.ipfs/java-ipfs-http-client {:mvn/version "v1.3.3"}}
 
  :aliases
  {:Ripley {:extra-deps {Ripley/Ripley {:git/url "https://github.com/Empire-Strikes-Back/Ripley"
@@ -47,6 +47,4 @@
                     Roxanne-Ritchi/Roxanne-Ritchi {:git/url "https://github.com/nextjournal/clojure-mode"
                                                    :sha "699a445ebf2767f41fd0b6eeed5a008511702be6"}
                     Batty/Batty {:git/url "https://github.com/borkdude/sci"
-                                 :sha "6c10e494371a37a56bef45c8148435888bae3a45"}}}
-
-  :corn {:extra-deps {}}}}
+                                 :sha "6c10e494371a37a56bef45c8148435888bae3a45"}}}}}

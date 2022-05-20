@@ -18,6 +18,7 @@
    [Dr-Pershing.seed]
    [Dr-Pershing.microwaved-turnips]
    [Dr-Pershing.radish]
+   [Dr-Pershing.corn]
    [Dr-Pershing.beans])
   (:import
    (java.io File))
@@ -27,7 +28,6 @@
 
 (defonce stateA (atom nil))
 (defonce host| (chan 1))
-(defonce corn| (chan (sliding-buffer 10)))
 
 (defn reload
   []
@@ -65,36 +65,8 @@
                    3366)]
       (Dr-Pershing.microwaved-turnips/process
        {:port port
-        :host| host|
-        :corn| corn|}))
+        :host| host|}))
 
     (let [path-db (.getCanonicalPath ^File (Wichita.java.io/file data-dir-path "Deep-Thought"))]
       (Wichita.java.io/make-parents path-db)
-      (Dr-Pershing.beans/process {:path path-db}))
-
-    (go
-      (let []
-        (doseq [filepath ["corn.js" "package.json"]]
-          (with-open [in (Wichita.java.io/input-stream (Wichita.java.io/resource filepath))]
-            (Wichita.java.io/copy
-             in
-             (Wichita.java.io/file (.getCanonicalPath ^File (Wichita.java.io/file data-dir-path filepath)))))))
-
-      (do
-        (->
-         (ProcessBuilder. ["npm" "install" "--force"])
-         (.directory (Wichita.java.io/file data-dir-path))
-         (.inheritIO)
-         (.start)
-         (.waitFor))
-        (->
-         (ProcessBuilder. ["node" "corn.js"])
-         (.directory (Wichita.java.io/file data-dir-path))
-         (.inheritIO)
-         (.start))))
-
-    (go
-      (loop []
-        (when-let [value (<! corn|)]
-          (println :corn-message value)
-          (recur))))))
+      (Dr-Pershing.beans/process {:path path-db}))))
