@@ -126,7 +126,7 @@
 
 
 (comment
-  
+
   (go
     (loop []
       (when-let [{:keys [message from] :as value} (<! sub|)]
@@ -141,7 +141,7 @@
           (let [{:keys [frequency host-peer-id]} message]
             (swap! gamesA update-in [frequency] merge message)))
         (recur))))
-  
+
   (go
     (loop []
       (<! (timeout 3000))
@@ -155,7 +155,7 @@
         (when-not (empty? expired)
           (apply swap! gamesA dissoc expired)))
       (recur)))
-  
+
   (go
     (loop []
       (<! (timeout 3000))
@@ -169,7 +169,7 @@
         (when-not (empty? expired)
           (apply swap! gameA update :players dissoc expired)))
       (recur)))
-  
+
   (go
     (loop []
       (when-let [value (<! ops|)]
@@ -224,7 +224,7 @@
 
           :discover
           (let [discover-jframe (JFrame. "discover")]
-            (Dr-Pershing.kiwis/discover-process
+            (Dr-Pershing.grapefruit/discover-process
              {:jframe discover-jframe
               :root-jframe jframe
               :ops| ops|
@@ -235,7 +235,7 @@
 
           :settings
           (let [settings-jframe (JFrame. "settings")]
-            (Dr-Pershing.kiwis/settings-process
+            (Dr-Pershing.grapefruit/settings-process
              {:jframe settings-jframe
               :root-jframe jframe
               :ops| ops|
@@ -251,9 +251,9 @@
             (println :frequency frequency)))
 
         (recur))))
-  
-  
-  
+
+
+
   (let [port (or (System/getenv "Jar_Jar_IPFS_PORT") "5001")
         ipfs-api-url (format "http://127.0.0.1:%s" port)
         id| (chan 1)
@@ -268,6 +268,6 @@
       :ipfs-api-url ipfs-api-url
       :ipfs-api-multiaddress (format "/ip4/127.0.0.1/tcp/%s" port)
       :id| id|}))
-  
+
   ;
   )
