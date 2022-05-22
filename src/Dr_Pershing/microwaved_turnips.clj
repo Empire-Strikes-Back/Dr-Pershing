@@ -1,4 +1,4 @@
-(ns Dr-Pershing.beans
+(ns Dr-Pershing.microwaved-turnips
   (:require
    [clojure.core.async :as Little-Rock
     :refer [chan put! take! close! offer! to-chan! timeout thread
@@ -7,6 +7,8 @@
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
    [clojure.java.io :as Wichita.java.io]
-   [clojure.string :as Wichita.string]))
+   [clojure.string :as Wichita.string]
+
+   [Dr-Pershing.seed]))
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
