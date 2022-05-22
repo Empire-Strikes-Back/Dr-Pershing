@@ -394,6 +394,8 @@
           (.addTab "query" jpanel-apples)
           (.setSelectedIndex 0))
 
+        (Dr-Pershing.beans/process {:jpanel-tab jpanel-beans})
+
         (.add jroot-panel jtabbed-pane))
 
       (let [path-db (.getCanonicalPath ^File (Wichita.java.io/file data-dir-path "Deep-Thought"))]
