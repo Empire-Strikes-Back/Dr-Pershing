@@ -37,8 +37,8 @@
    [Dr-Pershing.radish])
   (:import
    (javax.swing JFrame WindowConstants ImageIcon JPanel JScrollPane JTextArea BoxLayout JEditorPane ScrollPaneConstants SwingUtilities JDialog)
-   (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable)
-   (javax.swing DefaultListSelectionModel JCheckBox)
+   (javax.swing JMenu JMenuItem JMenuBar KeyStroke JOptionPane JToolBar JButton JToggleButton JSplitPane JLabel JTextPane JTextField JTable JTabbedPane)
+   (javax.swing DefaultListSelectionModel JCheckBox UIManager)
    (javax.swing.border EmptyBorder)
    (java.awt Canvas Graphics Graphics2D Shape Color Polygon Dimension BasicStroke Toolkit Insets BorderLayout)
    (java.awt.event KeyListener KeyEvent MouseListener MouseEvent ActionListener ActionEvent ComponentListener ComponentEvent)
@@ -352,7 +352,11 @@
          (= (System/getProperty "flatlaf.uiScale") nil))
     (System/setProperty "flatlaf.uiScale" "2x"))
 
+  (FlatLaf/setGlobalExtraDefaults (java.util.Collections/singletonMap "@background" "#ffffff"))
   (FlatLightLaf/setup)
+
+  #_(UIManager/put "background" Color/WHITE)
+  (FlatLaf/updateUI)
 
   (FlatDesktop/setQuitHandler (reify Consumer
                                 (accept [_ response]
@@ -373,6 +377,24 @@
       (Wichita.java.io/make-parents data-dir-path)
       (reset! stateA {})
       (reset! settingsA {:editor? true})
+
+
+
+      (let [jtabbed-pane (JTabbedPane.)
+            jpanel-apples (JPanel.)
+            jpanel-microwaved-turnips (JPanel.)
+            jpanel-corn (JPanel.)
+            jpanel-beans (JPanel.)]
+
+        (doto jtabbed-pane
+          (.setTabLayoutPolicy JTabbedPane/SCROLL_TAB_LAYOUT)
+          (.addTab "rating" jpanel-beans)
+          (.addTab "brackets" jpanel-corn)
+          (.addTab "edit" jpanel-microwaved-turnips)
+          (.addTab "query" jpanel-apples)
+          (.setSelectedIndex 0))
+
+        (.add jroot-panel jtabbed-pane))
 
       (let [path-db (.getCanonicalPath ^File (Wichita.java.io/file data-dir-path "Deep-Thought"))]
         (Wichita.java.io/make-parents path-db)
@@ -420,80 +442,78 @@
      (reify Runnable
        (run [_]
 
-            (doto jframe
-              (.add jroot-panel)
-              (.addComponentListener (let []
-                                       (reify ComponentListener
-                                         (componentHidden [_ event])
-                                         (componentMoved [_ event])
-                                         (componentResized [_ event] (put! resize| (.getTime (java.util.Date.))))
-                                         (componentShown [_ event]))))
-              (.addWindowListener (proxy [WindowAdapter] []
-                                    (windowClosing [event]
-                                      (let [event ^WindowEvent event]
-                                        #_(println :window-closing)
-                                        #_(put! host| true)
-                                        (-> event (.getWindow) (.dispose)))))))
+         (doto jframe
+           (.add jroot-panel)
+           (.addComponentListener (let []
+                                    (reify ComponentListener
+                                      (componentHidden [_ event])
+                                      (componentMoved [_ event])
+                                      (componentResized [_ event] (put! resize| (.getTime (java.util.Date.))))
+                                      (componentShown [_ event]))))
+           (.addWindowListener (proxy [WindowAdapter] []
+                                 (windowClosing [event]
+                                   (let [event ^WindowEvent event]
+                                     #_(println :window-closing)
+                                     #_(put! host| true)
+                                     (-> event (.getWindow) (.dispose)))))))
 
-            (doto jroot-panel
-              #_(.setLayout (BoxLayout. jroot-panel BoxLayout/Y_AXIS))
-              (.setLayout (MigLayout. "insets 10"
-                                      "[grow,shrink,fill]"
-                                      "[grow,shrink,fill]")))
+         (doto jroot-panel
+           #_(.setLayout (BoxLayout. jroot-panel BoxLayout/Y_AXIS))
+           (.setLayout (MigLayout. "insets 10"
+                                   "[grow,shrink,fill]"
+                                   "[grow,shrink,fill]")))
 
-            (when-let [url (Wichita.java.io/resource "icon.png")]
-              (.setIconImage jframe (.getImage (ImageIcon. url))))
+         (when-let [url (Wichita.java.io/resource "icon.png")]
+           (.setIconImage jframe (.getImage (ImageIcon. url))))
 
-            (menubar-process
-             {:jmenubar jmenubar
-              :jframe jframe
-              :menubar| ops|})
-            (.setJMenuBar jframe jmenubar)
+         (menubar-process
+          {:jmenubar jmenubar
+           :jframe jframe
+           :menubar| ops|})
+         (.setJMenuBar jframe jmenubar)
 
-            #_(Dr-Pershing.grapefruit/toolbar-process
-               {:jtoolbar jtoolbar})
-            #_(.add jroot-panel jtoolbar "dock north")
+         #_(Dr-Pershing.grapefruit/toolbar-process
+            {:jtoolbar jtoolbar})
+         #_(.add jroot-panel jtoolbar "dock north")
 
 
-            (.setPreferredSize jframe
-                               (let [size (-> (Toolkit/getDefaultToolkit) (.getScreenSize))]
-                                 (Dimension. (UIScale/scale 1024) (UIScale/scale 576)))
-                               #_(if SystemInfo/isJava_9_orLater
-                                   (Dimension. 830 440)
-                                   (Dimension. 1660 880)))
+         (.setPreferredSize jframe
+                            (let [size (-> (Toolkit/getDefaultToolkit) (.getScreenSize))]
+                              (Dimension. (UIScale/scale 1024) (UIScale/scale 576)))
+                            #_(if SystemInfo/isJava_9_orLater
+                                (Dimension. 830 440)
+                                (Dimension. 1660 880)))
 
-            #_(doto jframe
-                (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
-                (.setSize 2400 1600)
-                (.setLocation 1300 200)
-                #_(.add panel)
-                (.setVisible true))
+         #_(doto jframe
+             (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
+             (.setSize 2400 1600)
+             (.setLocation 1300 200)
+             #_(.add panel)
+             (.setVisible true))
 
-            #_(println :before (.getGraphics canvas))
-            (doto jframe
-              (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
-              (.pack)
-              (.setLocationRelativeTo nil)
-              (.setVisible true))
-            #_(println :after (.getGraphics canvas))
+         #_(println :before (.getGraphics canvas))
+         (doto jframe
+           (.setDefaultCloseOperation WindowConstants/DISPOSE_ON_CLOSE #_WindowConstants/EXIT_ON_CLOSE)
+           (.pack)
+           (.setLocationRelativeTo nil)
+           (.setVisible true))
+         #_(println :after (.getGraphics canvas))
 
-            (alter-var-root #'Dr-Pershing.main/jframe (constantly jframe))
+         (alter-var-root #'Dr-Pershing.main/jframe (constantly jframe))
 
-            (remove-watch stateA :watch-fn)
-            (add-watch stateA :watch-fn
-                       (fn [ref wathc-key old-state new-state]
+         (remove-watch stateA :watch-fn)
+         (add-watch stateA :watch-fn
+                    (fn [ref wathc-key old-state new-state]
 
-                         (when (not= old-state new-state))))
+                      (when (not= old-state new-state))))
 
-            (remove-watch settingsA :main)
-            (add-watch settingsA :main
-                       (fn [ref wathc-key old-state new-state]
-                         (SwingUtilities/invokeLater
-                          (reify Runnable
-                            (run [_]
-                              
-                              )))))
-            (reset! settingsA @settingsA))))
+         (remove-watch settingsA :main)
+         (add-watch settingsA :main
+                    (fn [ref wathc-key old-state new-state]
+                      (SwingUtilities/invokeLater
+                       (reify Runnable
+                         (run [_])))))
+         (reset! settingsA @settingsA))))
 
 
     (go
