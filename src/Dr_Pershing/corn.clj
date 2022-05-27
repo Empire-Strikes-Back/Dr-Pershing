@@ -1,13 +1,21 @@
 (ns Dr-Pershing.corn
   (:require
-   [clojure.core.async :as Little-Rock
+   [clojure.core.async :as a
     :refer [chan put! take! close! offer! to-chan! timeout thread
             sliding-buffer dropping-buffer
             go >! <! alt! alts! do-alts
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
-   [clojure.java.io :as Wichita.java.io]
-   [clojure.string :as Wichita.string]
-   [Dr-Pershing.seed]))
+   [clojure.java.io]
+   [clojure.string]
+   [cheshire.core]
+
+   [Dr-Pershing.seed])
+  (:import
+   (io.ipfs.api IPFS)
+   (java.util.stream Stream)
+   (java.util Base64)
+   (java.io BufferedReader)
+   (java.nio.charset StandardCharsets)))
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
