@@ -1,18 +1,54 @@
 #!/bin/bash
 
+
+install(){
+  npm i --no-package-lock
+  mkdir -p out/jar/ui/
+  mkdir -p out/jar/src/Dr-Pershing/
+  cp src/Dr_Pershing/index.html out/jar/ui/index.html
+  cp src/Dr_Pershing/style.css out/jar/ui/style.css
+  cp src/Dr_Pershing/schema.edn out/jar/src/Dr-Pershing/schema.edn
+  cp package.json out/jar/package.json
+}
+
+shadow(){
+  clj -A:shadow:main:ui -M -m shadow.cljs.devtools.cli "$@"
+}
+
 repl(){
-  clj \
-    -J-Dclojure.core.async.pool-size=1 \
-    -X:Ripley Ripley.core/process \
-    :main-ns Dr-Pershing.main
+  install
+  shadow clj-repl
+  # (shadow/watch :main)
+  # (shadow/watch :ui)
+  # (shadow/repl :main)
+  # :repl/quit
 }
 
+jar(){
 
-main(){
+  rm -rf out
+
   clojure \
-    -J-Dclojure.core.async.pool-size=1 \
-    -M -m Dr-Pershing.main
+    -X:Zazu Zazu.core/process \
+    :word '"Dr-Pershing"' \
+    :filename '"out/identicon/icon.png"' \
+    :size 256
+
+  install
+  cp out/identicon/icon.png out/jar/icon.png
+  shadow release :main :ui
+  # COMMIT_HASH=$(git rev-parse --short HEAD)
+  # COMMIT_COUNT=$(git rev-list --count HEAD)
+  # echo Dr-Pershing-$COMMIT_COUNT-$COMMIT_HASH.zip
+  # cd out/jar
+  # zip -r ../Dr-Pershing-$COMMIT_COUNT-$COMMIT_HASH.zip ./ && \
+  # cd ../../
 }
+
+release(){
+  jar
+}
+
 
 tag(){
   COMMIT_HASH=$(git rev-parse --short HEAD)
@@ -21,48 +57,6 @@ tag(){
   git tag $TAG $COMMIT_HASH
   echo $COMMIT_HASH
   echo $TAG
-}
-
-jar(){
-
-  rm -rf out/*.jar
-  COMMIT_HASH=$(git rev-parse --short HEAD)
-  COMMIT_COUNT=$(git rev-list --count HEAD)
-  clojure \
-    -X:Genie Genie.core/process \
-    :main-ns Dr-Pershing.main \
-    :filename "\"out/Dr-Pershing-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
-    :paths '["src" "out/ui" "data"]'
-}
-
-shadow(){
-  clj -A:shadow:ui -M -m shadow.cljs.devtools.cli "$@"
-}
-
-ui_install(){
-  npm i --no-package-lock
-  mkdir -p out/ui/
-  cp src/Dr_Pershing/index.html out/ui/index.html
-  cp src/Dr_Pershing/style.css out/ui/style.css
-}
-
-ui_repl(){
-  ui_install
-  shadow clj-repl
-  # (shadow/watch :ui)
-  # (shadow/repl :ui)
-  # :repl/quit
-}
-
-ui_release(){
-  ui_install
-  shadow release :ui
-}
-
-release(){
-  rm -rf out
-  ui_release
-  jar
 }
 
 "$@"

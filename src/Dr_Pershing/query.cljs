@@ -1,4 +1,4 @@
-(ns Dr-Pershing.ui-seed
+(ns Dr-Pershing.query
   (:require
    [clojure.core.async :as a
     :refer [chan put! take! close! offer! to-chan! timeout
@@ -7,7 +7,6 @@
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
    [clojure.string]
-   [clojure.pprint :as clojure.pprint]
    [cljs.core.async.impl.protocols :refer [closed?]]
    [cljs.core.async.interop :refer-macros [<p!]]
    [goog.string.format]
@@ -15,14 +14,16 @@
    [goog.object]
    [cljs.reader :refer [read-string]]
 
-   ["react-dom/client" :as react-dom.client]
-   [reagent.core :as reagent.core]))
+   [datahike.api :as Arthur-Dent.api]
 
-(defmulti op :op)
+   [Dr-Pershing.seed :refer [root op]]))
 
-(defonce root (let []
-                {:matchA (reagent.core/atom nil)
-                 :stateA (reagent.core/atom {})
-                 :ops| (chan (sliding-buffer 10))
-                 :program-send| (chan 10)
-                 :dom-rootA (atom (react-dom.client/createRoot (.getElementById js/document "ui")))}))
+
+(defmulti q :q)
+
+(defmethod q :all-attributes
+  [{:keys [conn]
+    :as opts}]
+  (Arthur-Dent.api/q '[:find [?ident ...]
+                        :where [_ :db/ident ?ident]]
+                      @conn))
