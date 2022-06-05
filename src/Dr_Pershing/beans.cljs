@@ -59,7 +59,7 @@
           _ (when-not (<! (Arthur-Dent.api/database-exists? config-databases))
               (<! (Arthur-Dent.api/create-database config-databases)))
           conn-databases (<! (Arthur-Dent.api/connect config-databases))
-          schema-databases (read-string (->> (.join path js/__dirname "src/Dr-Pershing/schema.edn")
+          schema-databases (read-string (->> (.join path js/__dirname "src/Dr_Pershing/schema.edn")
                                              (.readFileSync fs)
                                              (.toString)))]
       (let []
