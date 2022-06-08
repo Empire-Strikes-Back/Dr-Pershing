@@ -6,9 +6,9 @@
             go >! <! alt! alts! do-alts
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
-   [clojure.java.io :as Wichita.java.io]
-   [clojure.string :as Wichita.string]
-   [clojure.pprint :as Wichita.pprint]
+   [clojure.java.io :as clojure.java.io]
+   [clojure.string :as clojure.string]
+   [clojure.pprint :as clojure.pprint]
    [relative.trueskill :as Chip.trueskill]
    [relative.elo :as Chip.elo]
    [relative.rating :as Chip.rating]
@@ -20,8 +20,8 @@
 (comment
 
   (do
-    (def matches (read-string (slurp (Wichita.java.io/resource "matches.edn"))))
-    (def competitors (read-string (slurp (Wichita.java.io/resource "competitors.edn"))))
+    (def matches (read-string (slurp (clojure.java.io/resource "matches.edn"))))
+    (def competitors (read-string (slurp (clojure.java.io/resource "competitors.edn"))))
 
 
     (def engine #_(Chip.trueskill/trueskill-engine) (Chip.elo/elo-engine))
@@ -61,7 +61,7 @@
                   (reverse)
                   (mapv (fn [competitor]
                           [(:competitor/name competitor) (:competitor/surname competitor) (Float/parseFloat (format "%.1f" (:rating competitor)))])))]
-    (spit "data/rating-elo.edn" (with-out-str (Wichita.pprint/pprint rankings))))
+    (spit "data/rating-elo.edn" (with-out-str (clojure.pprint/pprint rankings))))
 
   
 
@@ -102,8 +102,8 @@
   Dale.core/POINTS_FOR_LOSS
 
   (do
-    (def matches (read-string (slurp (Wichita.java.io/resource "matches.edn"))))
-    (def competitors (read-string (slurp (Wichita.java.io/resource "competitors.edn"))))
+    (def matches (read-string (slurp (clojure.java.io/resource "matches.edn"))))
+    (def competitors (read-string (slurp (clojure.java.io/resource "competitors.edn"))))
 
 
     (def competitors-map (into {}
@@ -141,7 +141,7 @@
                           (:competitor/surname competitor)
                           (:rating competitor) #_(Float/parseFloat (format "%.1f" (:rating competitor)))])))]
 
-    (spit "data/rating-glicko2.edn" (with-out-str (Wichita.pprint/pprint ratings))))
+    (spit "data/rating-glicko2.edn" (with-out-str (clojure.pprint/pprint ratings))))
 
 
   ;

@@ -7,7 +7,7 @@
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
    [clojure.string]
-   [clojure.pprint :as clojure.pprint]
+   [clojure.pprint]
    [cljs.core.async.impl.protocols :refer [closed?]]
    [cljs.core.async.interop :refer-macros [<p!]]
    [goog.string.format]
@@ -19,8 +19,8 @@
    ["react" :as react]
    ["react-dom/client" :as react-dom.client]
 
-   [reagent.core :as reagent.core]
-   [reagent.dom :as reagent.dom]
+   [reagent.core]
+   [reagent.dom]
 
    ["antd/lib/layout" :default AntdLayout]
    ["antd/lib/menu" :default AntdMenu]
@@ -31,16 +31,16 @@
    ["antd/lib/table" :default AntdTable]
 
 
-   [clojure.test.check.generators :as Pawny.generators]
-   [clojure.spec.alpha :as clojure.spec]
+   [clojure.test.check.generators]
+   [clojure.spec.alpha :as s]
 
    [Dr-Pershing.ui-seed :refer [root op]]))
 
-(defmethod op :create-database
+(defmethod op :create-game
   [value]
   (println value))
 
-(defn rc-tab
+(defn rc-page
   []
   (reagent.core/with-let
     [dataA (reagent.core/cursor (:stateA root) [:simple-double-full])]

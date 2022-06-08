@@ -7,7 +7,7 @@
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
    [clojure.string]
-   [clojure.pprint :as clojure.pprint]
+   [clojure.pprint]
    [cljs.core.async.impl.protocols :refer [closed?]]
    [cljs.core.async.interop :refer-macros [<p!]]
    [goog.string.format]
@@ -16,7 +16,7 @@
    [cljs.reader :refer [read-string]]
 
    ["react-dom/client" :as react-dom.client]
-   [reagent.core :as reagent.core]))
+   [reagent.core]))
 
 (defmulti op :op)
 
