@@ -24,9 +24,8 @@
    [Dr-Pershing.pumpkin-seeds]
    [Dr-Pershing.grapefruit]
    [Dr-Pershing.salt]
-   [Dr-Pershing.microwaved-turnips]
-   [Dr-Pershing.corn]
-   [Dr-Pershing.beans]))
+   [Dr-Pershing.radish]
+   [Dr-Pershing.rolled-oats]))
 
 (defonce os (js/require "os"))
 (defonce fs (js/require "fs-extra"))
@@ -155,7 +154,7 @@
                       (.catch (fn [ex]
                                 (println ex)))))]
         (println (.. orbitdb -identity -id))
-        (<! (Dr-Pershing.beans/process {:orbitdb orbitdb}))))))
+        (<! (Dr-Pershing.rolled-oats/process {:orbitdb orbitdb}))))))
 
 
 (comment

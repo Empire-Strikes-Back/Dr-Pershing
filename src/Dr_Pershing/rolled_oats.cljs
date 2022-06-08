@@ -1,4 +1,4 @@
-(ns Dr-Pershing.beans
+(ns Dr-Pershing.rolled-oats
   (:require
    [clojure.core.async :as a
     :refer [chan put! take! close! offer! to-chan! timeout

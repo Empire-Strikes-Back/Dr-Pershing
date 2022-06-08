@@ -1,4 +1,4 @@
-(ns Dr-Pershing.corn
+(ns Dr-Pershing.radish
   (:require
    [clojure.core.async :as a
     :refer [chan put! take! close! offer! to-chan! timeout
