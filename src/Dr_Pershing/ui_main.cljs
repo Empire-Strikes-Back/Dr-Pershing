@@ -87,28 +87,6 @@
     "query"
     #_(str "settings" (:rand-int @stateA))]])
 
-(defn websocket-process
-  [{:keys [send| recv|]
-    :as opts}]
-  (let [socket (js/WebSocket. "ws://localhost:3355/ws")]
-    (.addEventListener socket "open" (fn [event]
-                                       (println :websocket-open)
-                                       (put! send| {:op :ping
-                                                    :from :ui
-                                                    :if :there-is-sompn-strage-in-your-neighbourhood
-                                                    :who :ya-gonna-call?})))
-    (.addEventListener socket "message" (fn [event]
-                                          (put! recv| (read-string (.-data event)))))
-    (.addEventListener socket "close" (fn [event]
-                                        (println :websocket-close event)))
-    (.addEventListener socket "error" (fn [event]
-                                        (println :websocket-error event)))
-    (go
-      (loop []
-        (when-let [value (<! send|)]
-          (.send socket (str value))
-          (recur))))))
-
 (defn rc-ui
   []
   [:> (.-Content AntdLayout)

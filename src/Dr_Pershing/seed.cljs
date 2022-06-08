@@ -35,6 +35,5 @@
                            3355)
                  :stateA (atom nil)
                  :windowA (atom nil)
-                 :host| (chan 1)
                  :ops| (chan 10)
                  :ui-send| (chan 10)}))

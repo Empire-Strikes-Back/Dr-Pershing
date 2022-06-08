@@ -19,7 +19,6 @@
    #_[datahike.api :as Arthur-Dent.api]
 
    [Dr-Pershing.seed :refer [root op]]
-   #_[Dr-Pershing.host]
    [Dr-Pershing.dates]
    [Dr-Pershing.pumpkin-seeds]
    [Dr-Pershing.grapefruit]
@@ -96,12 +95,6 @@
                  (fn [ref wathc-key old-state new-state]
 
                    (when (not= old-state new-state))))
-
-      #_(Dr-Pershing.host/process
-         {:port (:port root)
-          :host| (:host| root)
-          :ws-send| (:ui-send| root)
-          :ws-recv| (:ops| root)})
 
       (ops-process {})
 
