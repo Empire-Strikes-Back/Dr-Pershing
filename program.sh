@@ -23,6 +23,14 @@ tag(){
   echo $TAG
 }
 
+identicon(){
+  clojure \
+    -X:Zazu Zazu.core/process \
+    :word '"Dr-Pershing"' \
+    :filename '"out/identicon/icon.png"' \
+    :size 256
+}
+
 jar(){
 
   rm -rf out/*.jar
@@ -32,36 +40,11 @@ jar(){
     -X:Genie Genie.core/process \
     :main-ns Dr-Pershing.main \
     :filename "\"out/Dr-Pershing-$COMMIT_COUNT-$COMMIT_HASH.jar\"" \
-    :paths '["src" "out/ui" "data"]'
-}
-
-shadow(){
-  clj -A:shadow:ui -M -m shadow.cljs.devtools.cli "$@"
-}
-
-ui_install(){
-  npm i --no-package-lock
-  mkdir -p out/ui/
-  cp src/Dr_Pershing/index.html out/ui/index.html
-  cp src/Dr_Pershing/style.css out/ui/style.css
-}
-
-ui_repl(){
-  ui_install
-  shadow clj-repl
-  # (shadow/watch :ui)
-  # (shadow/repl :ui)
-  # :repl/quit
-}
-
-ui_release(){
-  ui_install
-  shadow release :ui
+    :paths '["src" "out/identicon" "data"]'
 }
 
 release(){
-  rm -rf out
-  ui_release
+  identicon
   jar
 }
 

@@ -9,8 +9,8 @@
    [clojure.java.io :as clojure.java.io]
    [clojure.string :as clojure.string]
 
-   [datahike.api :as datahike.api]
-   [Dr-Pershing.seed :refer [root]]))
+   [datahike.api]
+   [Dr-Pershing.seed]))
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
 

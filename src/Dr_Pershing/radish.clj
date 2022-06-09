@@ -1,18 +1,18 @@
 (ns Dr-Pershing.radish
   (:require
-   [clojure.core.async :as Little-Rock
+   [clojure.core.async
     :refer [chan put! take! close! offer! to-chan! timeout thread
             sliding-buffer dropping-buffer
             go >! <! alt! alts! do-alts
             mult tap untap pub sub unsub mix unmix admix
             pipe pipeline pipeline-async]]
-   [clojure.java.io :as clojure.java.io]
-   [clojure.string :as clojure.string]
-   [clojure.pprint :as clojure.pprint]
-   [relative.trueskill :as Chip.trueskill]
-   [relative.elo :as Chip.elo]
-   [relative.rating :as Chip.rating]
-   [glicko2.core :as Dale.core]
+   [clojure.java.io]
+   [clojure.string]
+   [clojure.pprint]
+   [relative.trueskill]
+   [relative.elo]
+   [relative.rating]
+   [glicko2.core]
    [Dr-Pershing.seed]))
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
@@ -24,7 +24,7 @@
     (def competitors (read-string (slurp (clojure.java.io/resource "competitors.edn"))))
 
 
-    (def engine #_(Chip.trueskill/trueskill-engine) (Chip.elo/elo-engine))
+    (def engine #_(relative.trueskill/trueskill-engine) (relative.elo/elo-engine))
 
     (def competitors-map (into {}
                                (reduce (fn [result competitor]
@@ -33,7 +33,7 @@
 
     (def competitors-engine (into {}
                                   (reduce (fn [result [id competitor]]
-                                            (conj result [id (Chip.rating/player engine (merge competitor
+                                            (conj result [id (relative.rating/player engine (merge competitor
                                                                                                {:id id}))]))
                                           [] competitors-map)))
 
@@ -45,10 +45,10 @@
             (let [competitor-a-engine (get @competitors-engineA (:match/competitor-a-id match))
                   competitor-b-engine (get @competitors-engineA (:match/competitor-b-id match))]
               (if (> (:match/competitor-a-score match) (:match/competitor-b-score match))
-                (let [players (Chip.rating/match engine competitor-a-engine competitor-b-engine)]
+                (let [players (relative.rating/match engine competitor-a-engine competitor-b-engine)]
                   (swap! competitors-engineA update-in [(:id (first players))] merge (first players))
                   (swap! competitors-engineA update-in [(:id (second players))] merge (second players)))
-                (let [players (Chip.rating/match engine competitor-b-engine competitor-a-engine)]
+                (let [players (relative.rating/match engine competitor-b-engine competitor-a-engine)]
                   (swap! competitors-engineA update-in [(:id (first players))] merge (first players))
                   (swap! competitors-engineA update-in [(:id (second players))] merge (second players))))))))
 
@@ -70,7 +70,7 @@
 
   (doseq [competitor competitors-engine]
     (println competitor)
-    (println (Chip.rating/rating competitor)))
+    (println (relative.rating/rating competitor)))
 
 
 
@@ -81,14 +81,14 @@
 
 (comment
 
-  (def player1 (Chip.rating/player elo-engine {:id "Chip"}))
-  (def player2 (Chip.rating/player elo-engine {:id "Dale"}))
+  (def player1 (relative.rating/player elo-engine {:id "relative"}))
+  (def player2 (relative.rating/player elo-engine {:id "glicko2"}))
 
-  (Chip.rating/rating player1)
+  (relative.rating/rating player1)
 
-  (Chip.rating/match elo-engine player1 player2)
+  (relative.rating/match elo-engine player1 player2)
   
-  (Chip.rating/rating player1)
+  (relative.rating/rating player1)
 
   ;
   )
@@ -96,10 +96,10 @@
 
 (comment
 
-  Dale.core/get-rating
+  glicko2.core/get-rating
 
-  Dale.core/POINTS_FOR_WIN
-  Dale.core/POINTS_FOR_LOSS
+  glicko2.core/POINTS_FOR_WIN
+  glicko2.core/POINTS_FOR_LOSS
 
   (do
     (def matches (read-string (slurp (clojure.java.io/resource "matches.edn"))))
@@ -124,12 +124,12 @@
                                       {:player1 (:match/competitor-a-id match)
                                        :player2 (:match/competitor-b-id match)
                                        :result (if (> (:match/competitor-a-score match) (:match/competitor-b-score match))
-                                                 Dale.core/POINTS_FOR_WIN
-                                                 Dale.core/POINTS_FOR_LOSS)}) matches)
+                                                 glicko2.core/POINTS_FOR_WIN
+                                                 glicko2.core/POINTS_FOR_LOSS)}) matches)
 
                        tau 0.5
 
-                       new-ratings (Dale.core/compute-ratings players results tau)]
+                       new-ratings (glicko2.core/compute-ratings players results tau)]
                    new-ratings)
                  (mapv (fn [[id result]]
                          (let [competitor (get competitors-map id)]
