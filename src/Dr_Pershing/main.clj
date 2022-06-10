@@ -12,10 +12,6 @@
    [clojure.pprint]
    [clojure.repl]
 
-   [aleph.http]
-   [manifold.deferred]
-   [manifold.stream]
-   [byte-streams]
    [cheshire.core]
 
    [datahike.api]
@@ -24,6 +20,8 @@
    [relative.elo]
    [relative.rating]
    [glicko2.core]
+   
+   [Dr-Pershing.libp2p]
 
    [Dr-Pershing.seed]
    [Dr-Pershing.dates]
@@ -50,10 +48,6 @@
    (net.miginfocom.layout ConstraintParser LC UnitValue)
    (java.io File)
    (java.lang Runnable)
-   (io.ipfs.api IPFS)
-   (java.util.stream Stream)
-   (java.util Base64)
-   (java.io BufferedReader)
    (java.nio.charset StandardCharsets))
   (:gen-class))
 
@@ -88,105 +82,6 @@
    '[Dr-Pershing.rolled-oats]
    '[Dr-Pershing.main]
    :reload))
-
-(defn encode-base64url-u
-  [^String string]
-  (-> (Base64/getUrlEncoder) (.withoutPadding)
-      (.encodeToString (.getBytes string StandardCharsets/UTF_8)) (->> (str "u"))))
-
-(defn decode-base64url-u
-  [^String string]
-  (-> (Base64/getUrlDecoder)
-      (.decode (subs string 1))
-      (String. StandardCharsets/UTF_8)))
-
-(defn pubsub-sub
-  [base-url topic message| cancel| raw-stream-connection-pool]
-  (let [streamV (volatile! nil)]
-    (->
-     (manifold.deferred/chain
-      (aleph.http/post (str base-url "/api/v0/pubsub/sub")
-                       {:query-params {:arg topic}
-                        :pool raw-stream-connection-pool})
-      :body
-      (fn [stream]
-        (vreset! streamV stream)
-        stream)
-      #(manifold.stream/map byte-streams/to-string %)
-      (fn [stream]
-        (manifold.deferred/loop
-         []
-          (->
-           (manifold.stream/take! stream :none)
-           (manifold.deferred/chain
-            (fn [message-string]
-              (when-not (identical? message-string :none)
-                (let [message (cheshire.core/parse-string message-string true)]
-                  #_(println :message message)
-                  (put! message| message))
-                (manifold.deferred/recur))))
-           (manifold.deferred/catch Exception (fn [ex] (println ex)))))))
-     (manifold.deferred/catch Exception (fn [ex] (println ex))))
-
-    (go
-      (<! cancel|)
-      (manifold.stream/close! @streamV))
-    nil))
-
-(defn pubsub-pub
-  [base-url topic message]
-  (let []
-
-    (->
-     (manifold.deferred/chain
-      (aleph.http/post (str base-url "/api/v0/pubsub/pub")
-                       {:query-params {:arg topic}
-                        :multipart [{:name "file" :content message}]})
-      :body
-      byte-streams/to-string
-      (fn [response-string] #_(println :repsponse reresponse-stringsponse)))
-     (manifold.deferred/catch
-      Exception
-      (fn [ex] (println ex))))
-
-    nil))
-
-(defn subscribe-process
-  [{:keys [^String ipfs-api-multiaddress
-           ^String ipfs-api-url
-           frequency
-           raw-stream-connection-pool
-           sub|
-           cancel|
-           id|]
-    :as opts}]
-  (let [ipfs (IPFS. ipfs-api-multiaddress)
-        base-url ipfs-api-url
-        topic (encode-base64url-u frequency)
-        id (-> ipfs (.id) (.get "ID"))
-        message| (chan (sliding-buffer 10))]
-    (put! id| {:peer-id id})
-    (pubsub-sub base-url  topic message| cancel| raw-stream-connection-pool)
-
-    (go
-      (loop []
-        (when-let [value (<! message|)]
-          (put! sub| (merge value
-                            {:message (-> (:data value) (decode-base64url-u) (read-string))}))
-          #_(println (merge value
-                            {:message (-> (:data value) (decode-base64url-u) (read-string))}))
-          #_(when-not (= (:from value) id)
-
-              #_(println (merge value
-                                {:message (-> (:data value) (decode-base64url-u) (read-string))})))
-          (recur))))
-
-    #_(go
-        (loop []
-          (<! (timeout 2000))
-          (pubsub-pub base-url topic (str {:id id
-                                           :rand-int (rand-int 100)}))
-          (recur)))))
 
 (defn menubar-process
   [{:keys [^JMenuBar jmenubar

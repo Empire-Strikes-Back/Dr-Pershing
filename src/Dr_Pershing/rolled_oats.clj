@@ -29,12 +29,7 @@
    (net.miginfocom.swing MigLayout)
    (net.miginfocom.layout ConstraintParser LC UnitValue)
    (java.io File)
-   (java.lang Runnable)
-   (io.ipfs.api IPFS)
-   (java.util.stream Stream)
-   (java.util Base64)
-   (java.io BufferedReader)
-   (java.nio.charset StandardCharsets)))
+   (java.lang Runnable)))
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
 
