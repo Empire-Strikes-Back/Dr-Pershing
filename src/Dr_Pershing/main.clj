@@ -22,8 +22,6 @@
    [relative.rating]
    [glicko2.core]
    
-   [Dr-Pershing.libp2p]
-
    [Dr-Pershing.seed]
    [Dr-Pershing.dates]
    [Dr-Pershing.pumpkin-seeds]
