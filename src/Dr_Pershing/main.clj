@@ -15,6 +15,7 @@
    [cheshire.core]
 
    [datahike.api]
+   [taoensso.timbre]
 
    [relative.trueskill]
    [relative.elo]
@@ -52,6 +53,8 @@
   (:gen-class))
 
 (do (set! *warn-on-reflection* true) (set! *unchecked-math* true))
+
+(taoensso.timbre/merge-config! {:min-level :warn})
 
 (defonce program-data-dirpath (or
                         (some-> (System/getenv "DR_PERSHING_PATH")
